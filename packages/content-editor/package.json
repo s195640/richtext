@@ -1,6 +1,6 @@
 {
   "name": "@s195640/content-editor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Standalone Tiptap-based rich content editor/viewer: one document with headings, formatting, embedded images, and video.",
   "type": "module",
   "main": "./dist/content-editor.cjs",
