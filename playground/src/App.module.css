@@ -1,0 +1,96 @@
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  font-size: 1.3rem;
+  margin: 0 0 4px;
+}
+
+.sub {
+  margin: 0;
+  color: #666;
+  font-size: 0.88rem;
+  max-width: 56ch;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actions button {
+  padding: 7px 12px;
+  border-radius: 7px;
+  border: 1px solid #d8d8de;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.primary {
+  background: #4f7cff !important;
+  color: #fff;
+  border-color: transparent !important;
+}
+
+.savedNote {
+  font-size: 0.8rem;
+  color: #2f9e64;
+  margin-bottom: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e4e4e8;
+}
+
+.tab,
+.tabActive {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.88rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tabActive {
+  border-bottom-color: #4f7cff;
+  font-weight: 600;
+}
+
+.panel {
+  min-height: 400px;
+}
+
+.viewerFrame {
+  border: 1px solid #e4e4e8;
+  border-radius: 10px;
+  background: #fff;
+  padding: 20px 22px 28px;
+}
+
+.json {
+  background: #1a1a1e;
+  color: #d8d8de;
+  padding: 16px;
+  border-radius: 10px;
+  overflow: auto;
+  font-size: 0.78rem;
+  max-height: 70vh;
+}

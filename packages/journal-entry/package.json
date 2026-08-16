@@ -1,0 +1,48 @@
+{
+  "name": "journal-entry",
+  "version": "0.1.0",
+  "description": "Standalone Tiptap-based journal-entry editor/viewer: one rich-text document with embedded image, gallery, and video blocks.",
+  "type": "module",
+  "main": "./dist/journal-entry.cjs",
+  "module": "./dist/journal-entry.js",
+  "types": "./dist/index.d.ts",
+  "style": "./dist/journal-entry.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/journal-entry.js",
+      "require": "./dist/journal-entry.cjs"
+    },
+    "./styles.css": "./dist/journal-entry.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@tiptap/core": "~3.27.0",
+    "@tiptap/extension-image": "~3.27.0",
+    "@tiptap/extension-link": "~3.27.0",
+    "@tiptap/extension-placeholder": "~3.27.0",
+    "@tiptap/extension-underline": "~3.27.0",
+    "@tiptap/pm": "~3.27.0",
+    "@tiptap/react": "~3.27.0",
+    "@tiptap/starter-kit": "~3.27.0",
+    "@tiptap/suggestion": "~3.27.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0"
+  }
+}

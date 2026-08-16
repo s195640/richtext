@@ -1,0 +1,72 @@
+.root {
+  border: 1px solid #e4e4e8;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a1a1e;
+  --je-accent: #4f7cff;
+  --je-frame-bg: #e9e9ec;
+}
+
+.root.readOnly {
+  border: none;
+  border-radius: 0;
+}
+
+.editorSurface {
+  padding: 20px 22px 28px;
+  min-height: 200px;
+  outline: none;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.readOnly .editorSurface {
+  padding: 0;
+}
+
+.editorSurface :global(p.is-editor-empty:first-child::before) {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adadb4;
+  pointer-events: none;
+  height: 0;
+}
+
+.editorSurface :global(h1),
+.editorSurface :global(h2),
+.editorSurface :global(h3),
+.editorSurface :global(h4) {
+  line-height: 1.25;
+  margin: 1.2em 0 0.5em;
+}
+
+.editorSurface :global(p) {
+  margin: 0.6em 0;
+}
+
+.editorSurface :global(blockquote) {
+  margin: 0.8em 0;
+  padding-left: 1em;
+  border-left: 3px solid #d8d8de;
+  color: #555;
+}
+
+.editorSurface :global(ul),
+.editorSurface :global(ol) {
+  padding-left: 1.4em;
+  margin: 0.6em 0;
+}
+
+.editorSurface :global(hr) {
+  border: none;
+  border-top: 1px solid #e0e0e4;
+  margin: 1.6em 0;
+}
+
+.editorSurface :global(a) {
+  color: var(--je-accent);
+}
+
+.editorSurface :global(.ProseMirror-selectednode) {
+  outline: none;
+}

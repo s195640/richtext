@@ -1,0 +1,126 @@
+.wrapper {
+  max-width: 100%;
+  margin: 0.75em auto;
+  position: relative;
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--je-frame-bg, #e9e9ec);
+  user-select: none;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8a8a92;
+  font-size: 0.9em;
+}
+
+.selected .frame {
+  outline: 2px solid var(--je-accent, #4f7cff);
+  outline-offset: 2px;
+}
+
+.toolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.frame:hover .toolbar,
+.selected .toolbar {
+  opacity: 1;
+}
+
+.toolbar button {
+  font-size: 0.78em;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+}
+
+.toolbar button.active {
+  background: var(--je-accent, #4f7cff);
+  color: #fff;
+  border-color: transparent;
+}
+
+.toolbar button.danger:hover {
+  background: #ffe4e4;
+  border-color: #f3a5a5;
+}
+
+.zoomControl {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.78em;
+}
+
+.zoomControl input {
+  flex: 1;
+}
+
+.resizeHandle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, 0.35) 50%);
+  border-bottom-right-radius: 8px;
+}
+
+.caption,
+.captionText {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font-size: 0.85em;
+  color: #666;
+  text-align: center;
+}
+
+.caption {
+  border: none;
+  background: transparent;
+  padding: 2px 4px;
+}
+
+.caption:focus {
+  outline: 1px dashed #ccc;
+  border-radius: 4px;
+}
+
+.captionText {
+  margin: 6px 0 0;
+}

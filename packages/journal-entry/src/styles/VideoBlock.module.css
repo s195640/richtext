@@ -1,0 +1,90 @@
+.wrapper {
+  margin: 0.75em 0;
+}
+
+.frame {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #10121a;
+}
+
+.selected .frame {
+  outline: 2px solid var(--je-accent, #4f7cff);
+  outline-offset: 2px;
+}
+
+.video {
+  width: 100%;
+  max-height: 480px;
+  display: block;
+  background: #000;
+}
+
+.placeholder {
+  width: 100%;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.9em;
+}
+
+.duration {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 0.75em;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.toolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.toolbar button {
+  font-size: 0.78em;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+}
+
+.toolbar button.danger:hover {
+  background: #ffe4e4;
+  border-color: #f3a5a5;
+}
+
+.caption,
+.captionText {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font-size: 0.85em;
+  color: #666;
+  text-align: center;
+}
+
+.caption {
+  border: none;
+  background: transparent;
+  padding: 2px 4px;
+}
+
+.caption:focus {
+  outline: 1px dashed #ccc;
+  border-radius: 4px;
+}
+
+.captionText {
+  margin: 6px 0 0;
+}
