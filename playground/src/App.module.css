@@ -4,6 +4,10 @@
   padding: 32px 20px 80px;
 }
 
+.page:has(.deviceGrid) {
+  max-width: 1180px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -85,12 +89,44 @@
   padding: 20px 22px 28px;
 }
 
-.json {
+.deviceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 375px;
+  align-items: start;
+  gap: 28px;
+}
+
+@media (max-width: 760px) {
+  .deviceGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.deviceColumn {
+  min-width: 0;
+}
+
+.deviceLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8a8a92;
+  margin-bottom: 8px;
+}
+
+.mobileShell {
+  width: 375px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
   background: #1a1a1e;
-  color: #d8d8de;
-  padding: 16px;
-  border-radius: 10px;
-  overflow: auto;
-  font-size: 0.78rem;
+  border-radius: 30px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+.mobileViewerFrame {
+  border-radius: 20px;
   max-height: 70vh;
+  overflow-y: auto;
 }

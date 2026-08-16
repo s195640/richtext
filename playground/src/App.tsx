@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
-import { JournalEntryEditor, JournalEntryViewer, type JournalEntryContent } from "journal-entry";
+import { ContentEditor, ContentViewer, ContentJsonViewer, type ContentDocument } from "@s195640/content-editor";
 import { mockUploadImage, mockUploadVideo } from "./mockUpload";
 import { sampleDocument } from "./sampleDocument";
 import styles from "./App.module.css";
 
-const STORAGE_KEY = "journal-entry-playground:doc";
+const STORAGE_KEY = "content-editor-playground:doc";
 
-function loadInitial(): JournalEntryContent {
+function loadInitial(): ContentDocument {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
@@ -19,8 +19,8 @@ function loadInitial(): JournalEntryContent {
 type Tab = "editor" | "viewer" | "json";
 
 export default function App() {
-  const [draft, setDraft] = useState<JournalEntryContent>(() => loadInitial());
-  const [savedDoc, setSavedDoc] = useState<JournalEntryContent>(() => loadInitial());
+  const [draft, setDraft] = useState<ContentDocument>(() => loadInitial());
+  const [savedDoc, setSavedDoc] = useState<ContentDocument>(() => loadInitial());
   const [tab, setTab] = useState<Tab>("editor");
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
@@ -47,7 +47,7 @@ export default function App() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <h1>Journal Entry — Playground</h1>
+          <h1>Content Editor — Playground</h1>
           <p className={styles.sub}>
             One Tiptap document, mock uploads, no backend. Edit it, save it to <code>localStorage</code> as JSON, then
             check the read-only viewer renders the same thing.
@@ -78,7 +78,7 @@ export default function App() {
 
       <main className={styles.panel}>
         {tab === "editor" && (
-          <JournalEntryEditor
+          <ContentEditor
             content={draft}
             onChange={setDraft}
             onUploadImage={mockUploadImage}
@@ -88,12 +88,25 @@ export default function App() {
         )}
 
         {tab === "viewer" && (
-          <div className={styles.viewerFrame}>
-            <JournalEntryViewer content={savedDoc} />
+          <div className={styles.deviceGrid}>
+            <div className={styles.deviceColumn}>
+              <div className={styles.deviceLabel}>Desktop</div>
+              <div className={styles.viewerFrame}>
+                <ContentViewer content={savedDoc} />
+              </div>
+            </div>
+            <div className={styles.deviceColumn}>
+              <div className={styles.deviceLabel}>Mobile · 375px</div>
+              <div className={styles.mobileShell}>
+                <div className={`${styles.viewerFrame} ${styles.mobileViewerFrame}`}>
+                  <ContentViewer content={savedDoc} />
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
-        {tab === "json" && <pre className={styles.json}>{JSON.stringify(draft, null, 2)}</pre>}
+        {tab === "json" && <ContentJsonViewer content={draft} />}
       </main>
     </div>
   );

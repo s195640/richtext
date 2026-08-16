@@ -1,0 +1,59 @@
+{
+  "name": "@s195640/content-editor",
+  "version": "0.1.0",
+  "description": "Standalone Tiptap-based rich content editor/viewer: one document with headings, formatting, embedded images, and video.",
+  "type": "module",
+  "main": "./dist/content-editor.cjs",
+  "module": "./dist/content-editor.js",
+  "types": "./dist/index.d.ts",
+  "style": "./dist/content-editor.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/content-editor.js",
+      "require": "./dist/content-editor.cjs"
+    },
+    "./styles.css": "./dist/content-editor.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s195640/richtext.git",
+    "directory": "packages/content-editor"
+  },
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@tiptap/core": "~3.27.0",
+    "@tiptap/extension-emoji": "~3.27.0",
+    "@tiptap/extension-file-handler": "~3.27.0",
+    "@tiptap/extension-image": "~3.27.0",
+    "@tiptap/extension-placeholder": "~3.27.0",
+    "@tiptap/extension-text-align": "~3.27.0",
+    "@tiptap/extension-text-style": "~3.27.0",
+    "@tiptap/pm": "~3.27.0",
+    "@tiptap/react": "~3.27.0",
+    "@tiptap/starter-kit": "~3.27.0",
+    "@tiptap/suggestion": "~3.27.0",
+    "react-easy-crop": "^5.5.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0"
+  }
+}

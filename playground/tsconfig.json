@@ -15,7 +15,7 @@
     "noFallthroughCasesInSwitch": true,
     "noEmit": true,
     "paths": {
-      "journal-entry": ["../packages/journal-entry/src/index.ts"]
+      "@s195640/content-editor": ["../packages/content-editor/src/index.ts"]
     }
   },
   "include": ["src"]

@@ -1,7 +1,7 @@
 import type { JSONContent } from "@tiptap/core";
 
-/** The persisted shape of one journal entry: raw Tiptap/ProseMirror JSON. */
-export type JournalEntryContent = JSONContent;
+/** The persisted shape of one document: raw Tiptap/ProseMirror JSON. */
+export type ContentDocument = JSONContent;
 
 export interface ImageUploadResult {
   url: string;

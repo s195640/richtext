@@ -1,0 +1,33 @@
+.root {
+  position: relative;
+}
+
+.copyBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #d8d8de;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.copyBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.json {
+  margin: 0;
+  background: #1a1a1e;
+  color: #d8d8de;
+  padding: 16px;
+  border-radius: 10px;
+  overflow: auto;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  max-height: 70vh;
+}

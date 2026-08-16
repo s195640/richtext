@@ -1,0 +1,35 @@
+name: Publish content-editor
+
+# Fires on a version tag, not every push, so ordinary commits never trigger a
+# publish. Namespaced (content-editor-v*) in case other packages join this
+# monorepo later and need their own tag/workflow pair.
+on:
+  push:
+    tags:
+      - "content-editor-v*.*.*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: "@s195640"
+
+      - run: npm ci
+
+      - run: npm run build:lib
+
+      - run: npm publish --workspace @s195640/content-editor
+        env:
+          # The per-run token GitHub provisions automatically, already scoped
+          # to this repo's packages — no personal access token needed here.
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

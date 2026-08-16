@@ -12,8 +12,7 @@
         "label": "Dev: Start",
         "detail": "Starts the playground dev server (npm run dev) at http://localhost:5173",
         "type": "shell",
-        "command": "npm",
-        "args": ["run", "dev"],
+        "command": "npm run dev",
         "isBackground": true,
         "problemMatcher": {
           "owner": "vite",
@@ -42,12 +41,7 @@
         "label": "Dev: Stop",
         "detail": "Kills whatever is listening on port 5173",
         "type": "shell",
-        "command": "powershell",
-        "args": [
-          "-NoProfile",
-          "-Command",
-          "Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Write-Host 'Dev server stopped (if it was running).'"
-        ],
+        "command": "Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Write-Host 'Dev server stopped (if it was running).'",
         "presentation": {
           "reveal": "always",
           "panel": "shared",

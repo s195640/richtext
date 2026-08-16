@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "journal-entry": "*",
+    "@s195640/content-editor": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

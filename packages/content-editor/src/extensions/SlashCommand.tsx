@@ -1,9 +1,15 @@
 import { Extension } from "@tiptap/core";
 import Suggestion, { type SuggestionOptions } from "@tiptap/suggestion";
+import { PluginKey } from "@tiptap/pm/state";
 import type { Editor, Range } from "@tiptap/core";
 import { createRoot, type Root } from "react-dom/client";
 import type { UploadCallbacks } from "../types";
 import styles from "../styles/SlashMenu.module.css";
+
+// Suggestion() defaults to a shared plugin key ("suggestion$") when none is
+// given, which collides with any other Suggestion-based extension (e.g.
+// EmojiPicker) registered in the same editor — each needs its own.
+const SLASH_COMMAND_PLUGIN_KEY = new PluginKey("slashCommand");
 
 export interface SlashCommandItem {
   title: string;
@@ -68,14 +74,8 @@ function buildItems(upload: UploadCallbacks): SlashCommandItem[] {
         const file = await pickFile("image/*");
         if (!file) return;
         const result = await upload.onUploadImage(file);
-        editor.chain().focus().insertImageBlock({ src: result.url, alt: result.alt ?? "" }).run();
+        editor.chain().focus().setImage({ src: result.url, alt: result.alt ?? "" }).run();
       },
-    },
-    {
-      title: "Gallery",
-      description: "Group of images",
-      icon: "🗂",
-      command: ({ editor, range }) => editor.chain().focus().deleteRange(range).insertGalleryBlock({ items: [] }).run(),
     },
     {
       title: "Video",
@@ -89,7 +89,7 @@ function buildItems(upload: UploadCallbacks): SlashCommandItem[] {
         editor
           .chain()
           .focus()
-          .insertVideoBlock({ src: result.url, poster: result.poster ?? "", duration: result.duration ?? null })
+          .setVideo({ src: result.url, poster: result.poster ?? null, duration: result.duration ?? null })
           .run();
       },
     },
@@ -165,6 +165,7 @@ class MenuView {
 function createSuggestion(upload: UploadCallbacks): Omit<SuggestionOptions<SlashCommandItem>, "editor"> {
   return {
     char: "/",
+    pluginKey: SLASH_COMMAND_PLUGIN_KEY,
     startOfLine: false,
     items: ({ query }) => {
       const all = buildItems(upload);

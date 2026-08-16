@@ -4,24 +4,24 @@ import type { JSONContent } from "@tiptap/core";
 import { buildExtensions } from "../extensions";
 import { UploadCallbacksContext } from "../uploadContext";
 import { Toolbar } from "./Toolbar";
-import type { UploadCallbacks, JournalEntryContent } from "../types";
-import styles from "../styles/JournalEntry.module.css";
+import type { UploadCallbacks, ContentDocument } from "../types";
+import styles from "../styles/ContentEditor.module.css";
 
-export interface JournalEntryEditorProps extends UploadCallbacks {
-  /** Initial Tiptap/ProseMirror JSON. Omit or pass `null` for a blank entry. */
-  content?: JournalEntryContent | null;
+export interface ContentEditorProps extends UploadCallbacks {
+  /** Initial Tiptap/ProseMirror JSON. Omit or pass `null` for a blank document. */
+  content?: ContentDocument | null;
   /** Called with the current document JSON on every change. */
-  onChange?: (content: JournalEntryContent) => void;
+  onChange?: (content: ContentDocument) => void;
   placeholder?: string;
   className?: string;
   /** Exposes the underlying Tiptap editor instance once created (e.g. for a "Save" button). */
-  onReady?: (getJSON: () => JournalEntryContent) => void;
+  onReady?: (getJSON: () => ContentDocument) => void;
   autofocus?: boolean;
 }
 
 const EMPTY_DOC: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
 
-export function JournalEntryEditor({
+export function ContentEditor({
   content,
   onChange,
   onUploadImage,
@@ -30,7 +30,7 @@ export function JournalEntryEditor({
   className,
   onReady,
   autofocus = false,
-}: JournalEntryEditorProps) {
+}: ContentEditorProps) {
   const upload: UploadCallbacks = { onUploadImage, onUploadVideo };
 
   const editor = useEditor(

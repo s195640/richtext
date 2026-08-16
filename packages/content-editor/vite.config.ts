@@ -9,8 +9,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "JournalEntry",
-      fileName: (format) => `journal-entry.${format === "es" ? "js" : "cjs"}`,
+      name: "ContentEditor",
+      fileName: (format) => `content-editor.${format === "es" ? "js" : "cjs"}`,
       formats: ["es", "cjs"],
     },
     cssCodeSplit: false,
@@ -22,7 +22,7 @@ export default defineConfig({
           "react-dom": "ReactDOM",
         },
         assetFileNames: (assetInfo) =>
-          assetInfo.name === "style.css" ? "journal-entry.css" : (assetInfo.name ?? "[name][extname]"),
+          assetInfo.name === "style.css" ? "content-editor.css" : (assetInfo.name ?? "[name][extname]"),
       },
     },
     sourcemap: true,

@@ -1,5 +1,5 @@
 {
-  "name": "journal-entry-workspace",
+  "name": "content-editor-workspace",
   "private": true,
   "version": "0.0.0",
   "workspaces": [
@@ -8,8 +8,8 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace playground",
-    "build:lib": "npm run build --workspace journal-entry",
-    "typecheck": "npm run typecheck --workspace journal-entry && npm run typecheck --workspace playground"
+    "build:lib": "npm run build --workspace @s195640/content-editor",
+    "typecheck": "npm run typecheck --workspace @s195640/content-editor && npm run typecheck --workspace playground"
   },
   "overrides": {
     "@tiptap/core": "3.27.4",

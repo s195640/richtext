@@ -1,5 +1,10 @@
 # Build spec: standalone Tiptap journal-entry component
 
+> **Note:** this is the original spec, kept as-is for history. The resulting
+> package (`JournalEntryEditor`/`JournalEntryViewer` below) was later
+> generalized and renamed to `content-editor` (`ContentEditor`/`ContentViewer`)
+> since it's now used for more than journal entries — see the root `README.md`.
+
 ## How to use this doc
 Hand this whole file to Claude Code as the opening prompt in a **brand-new, empty project** (not this repo — a separate git repo/folder created for this purpose). That project's only goal is to build, run, and debug this component in isolation until it works, as a portable package that can later be installed/imported into another React app. Nothing in the target app (routes, DB, existing admin UI) needs to exist for this build — treat all of that as out of reach; the only contract with it is the integration surface described below.
 

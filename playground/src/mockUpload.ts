@@ -1,4 +1,4 @@
-import type { ImageUploadResult, VideoUploadResult } from "journal-entry";
+import type { ImageUploadResult, VideoUploadResult } from "@s195640/content-editor";
 
 // Trivial local mocks for the host app's upload callbacks — no server involved.
 // A real host app would upload the file and return a hosted URL instead.
