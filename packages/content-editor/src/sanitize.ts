@@ -11,6 +11,7 @@ const ALLOWED_NODES = new Set([
   "blockquote",
   "horizontalRule",
   "hardBreak",
+  "codeBlock",
   "image",
   "video",
 ]);
@@ -57,6 +58,17 @@ const ALLOWED_TEXT_ALIGN = new Set(["left", "center", "right", "justify"]);
 
 function sanitizeTextAlign(value: unknown): string | undefined {
   return typeof value === "string" && ALLOWED_TEXT_ALIGN.has(value) ? value : undefined;
+}
+
+// Renders into a `class="language-xxx"` on the code block's <code>, so
+// (unlike href/style targets elsewhere in this file) it's not an injection
+// point — validated anyway, on the same "don't trust arbitrary strings into
+// rendered output" principle as everything else here.
+const SAFE_CODE_LANGUAGE = /^[a-z0-9+#.-]{1,32}$/i;
+
+function sanitizeCodeBlockAttrs(attrs: Record<string, unknown> = {}): { language: string } | undefined {
+  const language = attrs.language;
+  return typeof language === "string" && SAFE_CODE_LANGUAGE.test(language) ? { language } : undefined;
 }
 
 function sanitizeImageCrop(value: unknown): { x: number; y: number; zoom: number } | null {
@@ -194,6 +206,9 @@ function sanitizeNode(node: JSONContent | null | undefined, isRoot = false): JSO
     } else if (type === "paragraph") {
       const textAlign = sanitizeTextAlign((node.attrs as any).textAlign);
       if (textAlign) out.attrs = { textAlign };
+    } else if (type === "codeBlock") {
+      const attrs = sanitizeCodeBlockAttrs(node.attrs as Record<string, unknown>);
+      if (attrs) out.attrs = attrs;
     } else out.attrs = node.attrs;
   }
 

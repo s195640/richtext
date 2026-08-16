@@ -1,3 +1,22 @@
+/* Stands in for a host app's own fixed/sticky nav bar — exists purely to
+   demonstrate `toolbarOffset`: without it, the content-editor toolbar's own
+   `position: sticky; top: 0` would scroll right underneath this and get
+   covered. */
+.appBar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: #1a1a1e;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .page {
   max-width: 880px;
   margin: 0 auto;

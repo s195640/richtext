@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 4px;
-  padding: 8px;
+  gap: 2px;
+  padding: 5px 6px;
   border-bottom: 1px solid #e4e4e8;
   background: #fbfbfc;
   border-radius: 8px 8px 0 0;
@@ -12,18 +12,26 @@
   z-index: 5;
 }
 
+/* Fixed (not min-) width+height so every plain icon button is an identical
+   box — emoji glyphs (🔗🧹🎬🙂💾) render visibly wider than text glyphs
+   (B/i/S) at the same font-size, so without a hard cap + `overflow: hidden`
+   they'd grow past their neighbors instead of lining up. Dropdown triggers
+   that need more room for a label/caret (`.headingTrigger` etc., below)
+   opt back out of the fixed width. */
 .btn {
-  min-width: 30px;
-  height: 30px;
-  padding: 0 8px;
-  border-radius: 6px;
+  width: 28px;
+  height: 24px;
+  padding: 0 5px;
+  border-radius: 5px;
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
-  font-size: 0.9em;
+  font-size: 0.76em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .btn:hover {
@@ -42,13 +50,28 @@
 
 .divider {
   width: 1px;
-  height: 20px;
+  height: 16px;
   background: #e0e0e4;
-  margin: 0 4px;
+  margin: 0 2px;
+  flex-shrink: 0;
 }
 
 .headingRoot {
   position: relative;
+  flex-shrink: 0;
+}
+
+/* Dropdown triggers carry a label and/or caret in addition to the glyph, so
+   they can't be squeezed into the fixed `.btn` width above — let them grow,
+   but no narrower than it, so they still line up with the plain icon
+   buttons on their left edge. */
+.headingTrigger,
+.fontFamilyTrigger,
+.fontSizeTrigger,
+.alignTrigger {
+  width: auto;
+  min-width: 28px;
+  overflow: visible;
 }
 
 .headingTrigger {
@@ -56,7 +79,7 @@
 }
 
 .headingCaret {
-  font-size: 0.65em;
+  font-size: 0.6em;
   transform: translateY(1px);
 }
 
@@ -103,7 +126,7 @@
 .headingMenuItem[data-level="6"] { font-size: 0.86rem; font-weight: 600; }
 
 .alignTrigger {
-  gap: 4px;
+  gap: 2px;
 }
 
 .alignMenuItem {
@@ -116,7 +139,7 @@
   display: inline-flex;
   flex-direction: column;
   gap: 2px;
-  width: 14px;
+  width: 11px;
   flex-shrink: 0;
 }
 
@@ -204,16 +227,16 @@
 
 .fontFamilyTrigger,
 .fontSizeTrigger {
-  gap: 4px;
-  padding: 0 6px;
+  gap: 3px;
+  padding: 0 4px;
 }
 
 .fontTriggerLabel {
-  max-width: 78px;
+  max-width: 46px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.82em;
+  font-size: 0.72em;
 }
 
 .textColorGlyph {
@@ -251,8 +274,8 @@
 }
 
 .colorSwatch {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;

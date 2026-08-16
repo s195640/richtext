@@ -70,6 +70,10 @@ import "@s195640/content-editor/styles.css";
   onChange={(json) => save(json)}
   onUploadImage={async (file) => ({ url: await uploadToHost(file) })}
   onUploadVideo={async (file) => ({ url: await uploadToHost(file), poster, duration })}
+  onSave={(json) => persist(json)}
+  active={entry.active}
+  onActiveChange={(active) => setEntryActive(active)}
+  toolbarOffset={64} // clears a 64px fixed/sticky app header — see below
 />
 
 <ContentViewer content={savedJson} />
@@ -225,6 +229,33 @@ keystroke or first click on 🙂 — not from `extensions/index.ts`). Confirmed 
 eagerly-loaded main bundle (`content-editor.js`) that both the toolbar UI and the rest of the
 editor ship in. Net effect: the read-only viewer (which never registers either picker) never
 fetches it, and the editor only fetches it on first actual use.
+
+## Save button and Active switch
+
+Two icon-only buttons (💾 and ⏻), after a divider immediately right of the 🙂 emoji picker —
+host-wired controls, neither of which the component gives any meaning to on its own:
+
+- **💾 Save** — disabled until the document actually changes (tracked internally from
+  Tiptap's `onUpdate`), so it can't fire a no-op save. Clicking it calls `onSave(json)` with
+  the current document and clears the dirty flag; it doesn't touch `onChange`, which still
+  fires on every keystroke as before.
+- **⏻ Active** — a toggle button, highlighted (same blue "active" state as Bold/Italic/etc.)
+  when on; what it *means* (published vs. draft, enabled vs. disabled, etc.) is entirely up
+  to the host. `active` sets its initial state (defaults to `true`); `onActiveChange(active)`
+  fires on every toggle. Like `content`, it's initial-value-only — the button owns its state
+  internally after mount, it isn't re-synced from a later `active` prop change.
+
+Both are optional; omit `onSave`/`onActiveChange` and the controls render but are inert.
+
+## Toolbar sticky offset
+
+The toolbar sticks to the top of its scroll container while editing (`position: sticky; top`)
+so it stays visible on a long document. If the host app has its own fixed/sticky header above
+it, that header would otherwise cover the toolbar once the page scrolls past it — set
+`toolbarOffset` to the header's height to push the sticky point down below it. A number is
+treated as px; a string is passed straight through as any CSS length (`"4rem"`,
+`"var(--header-height)"`, ...). Defaults to `0`. See the playground's `APP_BAR_HEIGHT` /
+mock nav bar (`playground/src/App.tsx`) for a working example.
 
 ## Status / known gaps
 

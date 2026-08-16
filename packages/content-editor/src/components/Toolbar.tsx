@@ -13,6 +13,16 @@ import styles from "../styles/Toolbar.module.css";
 
 export interface ToolbarProps {
   editor: Editor;
+  /** Whether the document has unsaved changes; the Save button is disabled when false. */
+  dirty: boolean;
+  /** Called when the Save button is clicked (only ever while it's enabled, i.e. `dirty`). */
+  onSave: () => void;
+  /** Current state of the Active on/off switch. */
+  active: boolean;
+  /** Called when the Active switch is clicked, to flip its state. */
+  onToggleActive: () => void;
+  /** Sticky offset from the top of the scroll container — see `ContentEditorProps.toolbarOffset`. */
+  offset: number | string;
 }
 
 function ToolbarButton({
@@ -44,12 +54,44 @@ function ToolbarButton({
 
 const HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const;
 
-/** Paragraph + Heading 1-6 as one dropdown, instead of a button per level. */
-function HeadingDropdown({ editor }: { editor: Editor }) {
+interface BlockTypeOption {
+  key: string;
+  label: string;
+  glyph: string;
+  run: (editor: Editor) => void;
+}
+
+/** Every mutually-exclusive "block type" the current selection can be —
+ * Paragraph, Heading 1-6, Blockquote, Code block — as one dropdown instead
+ * of a separate button per type. Lists are their own dropdown
+ * (`ListTypeDropdown` below): a list wraps whatever block type is inside
+ * it rather than replacing it, so it isn't mutually exclusive with these. */
+const BLOCK_TYPES: BlockTypeOption[] = [
+  { key: "paragraph", label: "Paragraph", glyph: "¶", run: (e) => e.chain().focus().setParagraph().run() },
+  ...HEADING_LEVELS.map((level) => ({
+    key: `heading${level}`,
+    label: `Heading ${level}`,
+    glyph: `H${level}`,
+    run: (e: Editor) => e.chain().focus().toggleHeading({ level }).run(),
+  })),
+  { key: "blockquote", label: "Blockquote", glyph: "❝", run: (e) => e.chain().focus().toggleBlockquote().run() },
+  { key: "codeBlock", label: "Code block", glyph: "</>", run: (e) => e.chain().focus().toggleCodeBlock().run() },
+];
+
+/** Checked in priority order since e.g. a list item's paragraph would
+ * otherwise also read as `isActive("paragraph")`. */
+function currentBlockTypeKey(editor: Editor): string {
+  if (editor.isActive("codeBlock")) return "codeBlock";
+  if (editor.isActive("blockquote")) return "blockquote";
+  const level = HEADING_LEVELS.find((l) => editor.isActive("heading", { level: l }));
+  return level ? `heading${level}` : "paragraph";
+}
+
+function BlockTypeDropdown({ editor }: { editor: Editor }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const activeLevel = HEADING_LEVELS.find((level) => editor.isActive("heading", { level }));
+  const activeKey = currentBlockTypeKey(editor);
 
   useEffect(() => {
     if (!open) return;
@@ -67,13 +109,96 @@ function HeadingDropdown({ editor }: { editor: Editor }) {
     };
   }, [open]);
 
-  const setParagraph = () => {
-    editor.chain().focus().setParagraph().run();
+  const pick = (option: BlockTypeOption) => {
+    option.run(editor);
     setOpen(false);
   };
 
-  const setLevel = (level: (typeof HEADING_LEVELS)[number]) => {
-    editor.chain().focus().toggleHeading({ level }).run();
+  return (
+    <div className={styles.headingRoot} ref={rootRef}>
+      {/* Trigger is a static "H", not the active type's glyph — this picks
+          the block type, it doesn't report the current one (the menu below
+          does that via the highlighted entry). */}
+      <button
+        type="button"
+        className={`${styles.btn} ${styles.headingTrigger}`}
+        onClick={() => setOpen((v) => !v)}
+        title="Block type"
+        aria-label="Block type"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        H
+        <span className={styles.headingCaret}>▾</span>
+      </button>
+
+      {open && (
+        <div className={styles.headingMenu} role="listbox">
+          {BLOCK_TYPES.map((option) => (
+            <button
+              key={option.key}
+              type="button"
+              className={`${styles.headingMenuItem} ${activeKey === option.key ? styles.headingMenuItemActive : ""}`}
+              data-level={option.key.startsWith("heading") ? option.key.slice("heading".length) : undefined}
+              onClick={() => pick(option)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface ListTypeOption {
+  key: "bulletList" | "orderedList";
+  label: string;
+  glyph: string;
+  run: (editor: Editor) => void;
+}
+
+const LIST_TYPES: ListTypeOption[] = [
+  { key: "bulletList", label: "Bullet list", glyph: "•—", run: (e) => e.chain().focus().toggleBulletList().run() },
+  { key: "orderedList", label: "Ordered list", glyph: "1.", run: (e) => e.chain().focus().toggleOrderedList().run() },
+];
+
+function currentListTypeKey(editor: Editor): ListTypeOption["key"] | null {
+  if (editor.isActive("bulletList")) return "bulletList";
+  if (editor.isActive("orderedList")) return "orderedList";
+  return null;
+}
+
+/** Bullet list / Ordered list as their own dropdown, separate from
+ * `BlockTypeDropdown` — a list wraps around a block type rather than
+ * replacing it, so it doesn't belong in that mutually-exclusive set.
+ * Picking the already-active entry toggles the list back off (same as
+ * the underlying `toggleBulletList`/`toggleOrderedList` commands). */
+function ListTypeDropdown({ editor }: { editor: Editor }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const activeKey = currentListTypeKey(editor);
+  const activeOption = LIST_TYPES.find((o) => o.key === activeKey);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const pick = (option: ListTypeOption) => {
+    option.run(editor);
     setOpen(false);
   };
 
@@ -81,34 +206,27 @@ function HeadingDropdown({ editor }: { editor: Editor }) {
     <div className={styles.headingRoot} ref={rootRef}>
       <button
         type="button"
-        className={`${styles.btn} ${styles.headingTrigger} ${activeLevel ? styles.active : ""}`}
+        className={`${styles.btn} ${styles.headingTrigger} ${activeKey ? styles.active : ""}`}
         onClick={() => setOpen((v) => !v)}
-        title="Paragraph style"
-        aria-label="Paragraph style"
+        title="List type"
+        aria-label="List type"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        H<span className={styles.headingCaret}>▾</span>
+        {activeOption?.glyph ?? "≡"}
+        <span className={styles.headingCaret}>▾</span>
       </button>
 
       {open && (
         <div className={styles.headingMenu} role="listbox">
-          <button
-            type="button"
-            className={`${styles.headingMenuItem} ${!activeLevel ? styles.headingMenuItemActive : ""}`}
-            onClick={setParagraph}
-          >
-            Paragraph
-          </button>
-          {HEADING_LEVELS.map((level) => (
+          {LIST_TYPES.map((option) => (
             <button
-              key={level}
+              key={option.key}
               type="button"
-              className={`${styles.headingMenuItem} ${activeLevel === level ? styles.headingMenuItemActive : ""}`}
-              data-level={level}
-              onClick={() => setLevel(level)}
+              className={`${styles.headingMenuItem} ${activeKey === option.key ? styles.headingMenuItemActive : ""}`}
+              onClick={() => pick(option)}
             >
-              Heading {level}
+              {option.label}
             </button>
           ))}
         </div>
@@ -293,7 +411,7 @@ function EmojiPickerDropdown({ editor }: { editor: Editor }) {
   );
 }
 
-export function Toolbar({ editor }: ToolbarProps) {
+export function Toolbar({ editor, dirty, onSave, active, onToggleActive, offset }: ToolbarProps) {
   const { onUploadImage, onUploadVideo } = useUploadCallbacks();
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -341,7 +459,7 @@ export function Toolbar({ editor }: ToolbarProps) {
   if (!editor) return null;
 
   return (
-    <div className={styles.toolbar}>
+    <div className={styles.toolbar} style={{ top: typeof offset === "number" ? `${offset}px` : offset }}>
       <ToolbarButton label="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}>
         B
       </ToolbarButton>
@@ -378,29 +496,9 @@ export function Toolbar({ editor }: ToolbarProps) {
 
       <span className={styles.divider} />
 
-      <HeadingDropdown editor={editor} />
+      <BlockTypeDropdown editor={editor} />
+      <ListTypeDropdown editor={editor} />
       <TextAlignDropdown editor={editor} />
-      <ToolbarButton
-        label="Bullet list"
-        active={editor.isActive("bulletList")}
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-      >
-        •—
-      </ToolbarButton>
-      <ToolbarButton
-        label="Ordered list"
-        active={editor.isActive("orderedList")}
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-      >
-        1.
-      </ToolbarButton>
-      <ToolbarButton
-        label="Blockquote"
-        active={editor.isActive("blockquote")}
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-      >
-        ❝
-      </ToolbarButton>
       <ToolbarButton label="Horizontal rule" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
         ―
       </ToolbarButton>
@@ -414,6 +512,15 @@ export function Toolbar({ editor }: ToolbarProps) {
         🎬
       </ToolbarButton>
       <EmojiPickerDropdown editor={editor} />
+
+      <span className={styles.divider} />
+
+      <ToolbarButton label={dirty ? "Save changes" : "No changes to save"} disabled={!dirty} onClick={onSave}>
+        💾
+      </ToolbarButton>
+      <ToolbarButton label={active ? "Active (on)" : "Active (off)"} active={active} onClick={onToggleActive}>
+        ⏻
+      </ToolbarButton>
 
       <input ref={imageInputRef} type="file" accept="image/*" hidden onChange={onImageFile} />
       <input ref={videoInputRef} type="file" accept="video/*" hidden onChange={onVideoFile} />
