@@ -1,0 +1,68 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+  ],
+  "settings": {},
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Dev: Start",
+        "detail": "Starts the playground dev server (npm run dev) at http://localhost:5173",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "dev"],
+        "isBackground": true,
+        "problemMatcher": {
+          "owner": "vite",
+          "pattern": {
+            "regexp": "^ERROR$",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "VITE v",
+            "endsPattern": "Local:"
+          }
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated",
+          "group": "devserver",
+          "clear": true
+        },
+        "group": { "kind": "build", "isDefault": true },
+        "runOptions": { "instanceLimit": 1 }
+      },
+      {
+        "label": "Dev: Stop",
+        "detail": "Kills whatever is listening on port 5173",
+        "type": "shell",
+        "command": "powershell",
+        "args": [
+          "-NoProfile",
+          "-Command",
+          "Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Write-Host 'Dev server stopped (if it was running).'"
+        ],
+        "presentation": {
+          "reveal": "always",
+          "panel": "shared",
+          "group": "devserver",
+          "clear": false
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Dev: Restart",
+        "detail": "Stops then restarts the playground dev server",
+        "dependsOrder": "sequence",
+        "dependsOn": ["Dev: Stop", "Dev: Start"],
+        "problemMatcher": []
+      }
+    ]
+  }
+}
